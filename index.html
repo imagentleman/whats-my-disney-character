@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>What's my Disney character?</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Mouse+Memoirs&display=swap"
+      rel="stylesheet"
+    />
+
+    <style type="text/css">
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      #jeelizFaceFilterFollow {
+        border-radius: 50%;
+        display: block;
+        position: absolute;
+        z-index: 1000;
+        height: 60px;
+        width: 60px;
+      }
+
+      #jeeFaceFilterCanvas {
+        /* YOU SHOULD KEEP the transform: translateZ(-4000px) and the transform-style: preserve-3d;
+          OTHERWISE THE DIV WILL BE BEHIND THE CANVAS WITH IOS
+          */
+        transform: translateZ(-4000px) translate(-50%, -50%) rotateY(180deg);
+        transform-style: preserve-3d;
+        z-index: 10;
+        position: absolute;
+        max-height: 100%;
+        max-width: 100%;
+        left: 50%;
+        top: 50%;
+        width: 100vmin;
+      }
+
+      body {
+        overflow: auto;
+        overflow-y: auto;
+        background-color: white;
+        background-attachment: fixed;
+        background-color: black;
+        background-position: center;
+        background-size: contain;
+        margin: 0px;
+      }
+
+      #disneyCharacter {
+        border-radius: 50%;
+        opacity: 0;
+        width: 100%;
+      }
+
+      #question {
+        position: absolute;
+        font-family: "Mouse Memoirs", sans-serif;
+        bottom: 20px;
+        color: #fff140;
+        text-align: center;
+        width: 100%;
+        z-index: 11;
+        letter-spacing: 1px;
+        line-height: 1;
+        text-shadow: 0 2px 3px black;
+        font-size: 60px;
+      }
+
+      #cache {
+        overflow: hidden;
+        height: 0;
+        width: 0;
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body onload="main();" style="color: white">
+    <canvas width="1024" height="1024" id="jeeFaceFilterCanvas"></canvas>
+
+    <div id="jeelizFaceFilterFollow">
+      <img id="disneyCharacter" src="0.png" />
+    </div>
+
+    <h1 id="question">Loading...</h1>
+
+    <div id="cache"></div>
+  </body>
+
+  <script src="jeelizFaceFilter.min.js"></script>
+  <script src="JeelizResizer.min.js"></script>
+
+  <script src="THREEMatrix.min.js"></script>
+  <script>
+    var quasimodo = localStorage.getItem("quasimodo");
+    var numImages = 132;
+    var numChosenImages = 10;
+    var currentImage = 1;
+
+    var images = [0];
+
+    while (images.length < numChosenImages) {
+      var r = Math.floor(Math.random() * numImages) + 1;
+      if (images.indexOf(r) === -1) {
+        images.push(r);
+
+        var img = document.createElement("img");
+        img.src = r + ".png";
+        cache.appendChild(img);
+      }
+    }
+
+    function facelify() {
+      question.textContent = "What's my disney character?";
+
+      var interval = setInterval(function() {
+        var nextImage = (currentImage + 1) % numChosenImages;
+        disneyCharacter.src = images[nextImage] + ".png";
+        currentImage++;
+      }, 100);
+
+      setTimeout(function() {
+        clearInterval(interval);
+        if (!quasimodo) {
+          disneyCharacter.src = "0.png";
+          localStorage.setItem("quasimodo", "true");
+        }
+      }, 4000);
+    }
+  </script>
+  <script src="index.js"></script>
+</html>
